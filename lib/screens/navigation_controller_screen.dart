@@ -11,32 +11,80 @@ class NavigationControllerScreen extends StatefulWidget {
   const NavigationControllerScreen({super.key});
 
   @override
-  State<NavigationControllerScreen> createState() => _NavigationControllerScreenState();
+  State<NavigationControllerScreen> createState() =>
+      _NavigationControllerScreenState();
 }
 
-class _NavigationControllerScreenState extends State<NavigationControllerScreen> {
+class _NavigationControllerScreenState
+    extends State<NavigationControllerScreen> {
   final _navigationEntries = <NavigationEntry>[
-    NavigationEntry(label: "Lists", iconData: Icons.queue_music, screen: const ListsScreen()),
-    NavigationEntry(label: "Interprets", iconData: Icons.record_voice_over, screen: const InterpretsScreen()),
-    NavigationEntry(label: "Titles", iconData: Icons.music_note, screen: const TitlesScreen()),
-    NavigationEntry(label: "Albums", iconData: Icons.library_music, screen: const AlbumsScreen()),
-    NavigationEntry(label: "More", iconData: Icons.more_horiz, screen: const MoreScreen()),
+    NavigationEntry(
+      label: "Lists",
+      iconData: Icons.queue_music,
+      screen: const ListsScreen(),
+    ),
+    NavigationEntry(
+      label: "Interprets",
+      iconData: Icons.record_voice_over,
+      screen: const InterpretsScreen(),
+    ),
+    NavigationEntry(
+      label: "Titles",
+      iconData: Icons.music_note,
+      screen: const TitlesScreen(),
+    ),
+    NavigationEntry(
+      label: "Albums",
+      iconData: Icons.library_music,
+      screen: const AlbumsScreen(),
+    ),
+    NavigationEntry(
+      label: "More",
+      iconData: Icons.more_horiz,
+      screen: const MoreScreen(),
+      customLeading: TextButton(
+        onPressed: () {},
+        child: const Text(
+          "Edit",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12),
+        ),
+      ),
+    ),
   ];
 
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final currentEntry = _navigationEntries[currentPageIndex];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: StreamBuilder<String>(
           stream: AppBarController.of(context)?.appPropertiesBloc.appTitle,
-          builder: (context, snapshot) => Text(snapshot.data ?? _navigationEntries.first.label),
+          builder: (context, snapshot) =>
+              Text(snapshot.data ?? _navigationEntries.first.label),
         ),
-        leading: IconButton(onPressed: (){}, icon: const Icon(Icons.abc_outlined)),
+        leading: currentEntry.customLeading ??
+            TextButton(
+              onPressed: () {},
+              child: const Text(
+                "Store",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
         actions: <Widget>[
-          IconButton(onPressed: (){}, icon: const Icon(Icons.abc_outlined))
+          TextButton(
+            onPressed: () {},
+            child: const Text(
+              "You\n playing",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
         ],
       ),
       body: <Widget>[
@@ -52,8 +100,12 @@ class _NavigationControllerScreenState extends State<NavigationControllerScreen>
           setState(() {
             currentPageIndex = index;
           });
-        }, destinations: <Widget>[
-          ..._navigationEntries.map((entry) => NavigationDestination(icon: Icon(entry.iconData), label: entry.label))
+        },
+        destinations: <Widget>[
+          ..._navigationEntries.map(
+            (entry) => NavigationDestination(
+                icon: Icon(entry.iconData), label: entry.label),
+          )
         ],
         selectedIndex: currentPageIndex,
       ),
